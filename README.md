@@ -104,12 +104,16 @@ PYTHONPATH=src python3 -m wacom_utility.wayland_pad_daemon
 
 For PyPI-style user installs, the repo user unit targets:
 - `%h/.local/bin/wacom-wayland-pad-daemon`
+- `/usr/bin/ydotoold --socket-path=%t/.ydotool_socket --socket-perm=0660`
 
-Service file included:
+Service files included:
+- `%h/.local/bin/wacom-wayland-pad-daemon`
 - `systemd/user/wacom-wayland-pad-daemon.service`
+- `systemd/user/ydotoold.service`
 
 Both the repo user unit and the RPM unit are rendered from the shared template:
 - `systemd/wacom-wayland-pad-daemon.service.in`
+- `systemd/ydotoold.service.in`
 
 User install flow:
 
@@ -117,18 +121,20 @@ User install flow:
 python3 -m pip install --user .
 mkdir -p ~/.config/systemd/user
 cp systemd/user/wacom-wayland-pad-daemon.service ~/.config/systemd/user/
+cp systemd/user/ydotoold.service ~/.config/systemd/user/
 systemctl --user daemon-reload
-systemctl --user enable --now wacom-wayland-pad-daemon.service
+systemctl --user enable --now ydotoold.service wacom-wayland-pad-daemon.service
 ```
 
 For RPM installs, the packaged user unit targets the system wrapper:
 - `/usr/bin/wacom-wayland-pad-daemon`
+- `/usr/bin/ydotoold --socket-path=%t/.ydotool_socket --socket-perm=0660`
 
 RPM install:
 
 ```bash
 systemctl --user daemon-reload
-systemctl --user enable --now wacom-wayland-pad-daemon.service
+systemctl --user enable --now ydotoold.service wacom-wayland-pad-daemon.service
 ```
 
 Source checkout:
@@ -145,11 +151,12 @@ Check status/logs:
 
 ```bash
 systemctl --user status wacom-wayland-pad-daemon.service
+journalctl --user -u ydotoold.service -f
 journalctl --user -u wacom-wayland-pad-daemon.service -f
 ```
 
 Disable:
 
 ```bash
-systemctl --user disable --now wacom-wayland-pad-daemon.service
+systemctl --user disable --now wacom-wayland-pad-daemon.service ydotoold.service
 ```

@@ -3,9 +3,11 @@
 Description=Wacom Wayland Pad Daemon (evdev + ydotool)
 After=graphical-session.target
 PartOf=graphical-session.target
-
+Wants=ydotoold.service
+After=ydotoold.service
 [Service]
 Type=simple
+Environment=YDOTOOL_SOCKET=%t/.ydotool_socket
 ExecStart=/usr/bin/wacom-wayland-pad-daemon
 Restart=on-failure
 RestartSec=1

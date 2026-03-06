@@ -70,8 +70,17 @@ EOF
 chmod 0755 %{buildroot}%{_bindir}/wacom-wayland-pad-daemon
 
 %{__python3} scripts/render-systemd-service.py \
+    --template systemd/ydotoold.service.in \
+    --output %{buildroot}%{_userunitdir}/ydotoold.service \
+    --exec-start "/usr/bin/ydotoold --socket-path=%t/.ydotool_socket --socket-perm=0660"
+chmod 0644 %{buildroot}%{_userunitdir}/ydotoold.service
+
+%{__python3} scripts/render-systemd-service.py \
     --template systemd/wacom-wayland-pad-daemon.service.in \
     --output %{buildroot}%{_userunitdir}/wacom-wayland-pad-daemon.service \
+    --unit-extra Wants=ydotoold.service \
+    --unit-extra After=ydotoold.service \
+    --service-extra Environment=YDOTOOL_SOCKET=%t/.ydotool_socket \
     --exec-start %{_bindir}/wacom-wayland-pad-daemon
 chmod 0644 %{buildroot}%{_userunitdir}/wacom-wayland-pad-daemon.service
 install -D -m 0644 packaging/rpm/wacom-utility.desktop \
@@ -86,6 +95,7 @@ install -D -m 0644 packaging/rpm/wacom-utility.desktop \
 %doc UPGRADE_REPORT.md
 %{_bindir}/wacom-utility
 %{_bindir}/wacom-wayland-pad-daemon
+%{_userunitdir}/ydotoold.service
 %{_userunitdir}/wacom-wayland-pad-daemon.service
 %{_datadir}/applications/wacom-utility.desktop
 %{python3_sitelib}/wacom_utility

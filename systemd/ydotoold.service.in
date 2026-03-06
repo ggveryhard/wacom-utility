@@ -1,13 +1,11 @@
-# Generated from systemd/wacom-wayland-pad-daemon.service.in. Do not edit by hand.
+# Generated from systemd/ydotoold.service.in. Do not edit by hand.
 [Unit]
-Description=Wacom Wayland Pad Daemon (evdev + ydotool)
+Description=ydotool daemon
 After=graphical-session.target
 PartOf=graphical-session.target
-@UNIT_EXTRA@
 
 [Service]
 Type=simple
-@SERVICE_EXTRA@
 ExecStart=@EXECSTART@
 Restart=on-failure
 RestartSec=1
