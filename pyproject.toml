@@ -1,0 +1,62 @@
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "wacom-utility"
+version = "0.1.3"
+description = "GTK4 Wacom utility with Wayland pad daemon"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "GPL-2.0-only" }
+authors = [
+  { name = "ggveryhard" }
+]
+keywords = ["wacom", "wayland", "gtk4", "tablet", "ydotool"]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Environment :: X11 Applications :: GTK",
+  "Intended Audience :: End Users/Desktop",
+  "License :: OSI Approved :: GNU General Public License v2 (GPLv2)",
+  "Operating System :: POSIX :: Linux",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3 :: Only",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Topic :: Desktop Environment",
+  "Topic :: Utilities",
+]
+dependencies = [
+  "PyGObject",
+  "pycairo",
+  "evdev",
+]
+
+[project.urls]
+Homepage = "https://github.com/ggveryhard/wacom-utility"
+Repository = "https://github.com/ggveryhard/wacom-utility"
+Issues = "https://github.com/ggveryhard/wacom-utility/issues"
+
+[project.gui-scripts]
+wacom-utility = "wacom_utility.wacom_utility:main"
+
+[project.scripts]
+wacom-wayland-pad-daemon = "wacom_utility.wayland_pad_daemon:main"
+
+[tool.setuptools]
+package-dir = { "" = "src" }
+include-package-data = true
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+wacom_utility = [
+  "*.txt",
+  "*.ui",
+  "images/*.png",
+  "images/pad/*.png",
+  "images/pad/*.xml",
+]

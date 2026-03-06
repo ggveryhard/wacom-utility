@@ -13,9 +13,10 @@ import gi
 gi.require_version("Gtk", "4.0")
 from gi.repository import Gtk
 
-from cairo_framework import Pad
-from wacom_identify import TabletIdClass
-from wacom_interface import DeviceInfo, XSetWacom
+from .cairo_framework import Pad
+from .resources import data_path, package_root
+from .wacom_identify import TabletIdClass
+from .wacom_interface import DeviceInfo, XSetWacom
 
 
 CONFIG_PATH = Path.home() / ".wacom_utility"
@@ -23,16 +24,11 @@ WAYLAND_CONFIG_PATH = Path.home() / ".wacom_utility_wayland.json"
 
 
 def resolve_data_dir() -> Path:
-    app_dir = Path(__file__).resolve().parent
-    candidates = [
-        Path(os.environ.get("WACOM_UTILITY_DATA_DIR", "")) if os.environ.get("WACOM_UTILITY_DATA_DIR") else None,
-        app_dir,
-        Path("/usr/share/wacom-utility"),
-    ]
+    candidates = [package_root(), Path(__file__).resolve().parent]
     for c in candidates:
         if c and (c / "wacom_utility_gtk4.ui").exists():
             return c
-    return app_dir
+    return Path(__file__).resolve().parent
 
 
 DATA_DIR = resolve_data_dir()
@@ -130,7 +126,7 @@ def run_configure_mode() -> int:
 
 
 def load_wacom_ascii_diagram() -> str:
-    src = Path("/home/sam/Downloads/wacom.sh")
+    src = data_path("wacom.sh")
     if src.exists():
         try:
             lines = src.read_text(encoding="utf-8", errors="ignore").splitlines()
@@ -418,7 +414,7 @@ class ButtonMappingDialog(Gtk.Window):
                 mappings[key] = {"label": label, "command": cmd}
                 save_wayland_config(cfg)
                 self.status.set_text(
-                    f"Saved Wayland mapping for button index {btn_index}. Start wayland_pad_daemon.py."
+                    f"Saved Wayland mapping for button index {btn_index}. Start wacom-wayland-pad-daemon."
                 )
                 return
 
@@ -433,7 +429,7 @@ class ButtonMappingDialog(Gtk.Window):
             mappings[key] = {"label": keys, "command": cmd}
             save_wayland_config(cfg)
             self.status.set_text(
-                f"Saved Wayland mapping for button index {btn_index}. Start wayland_pad_daemon.py."
+                f"Saved Wayland mapping for button index {btn_index}. Start wacom-wayland-pad-daemon."
             )
             return
 
@@ -661,7 +657,7 @@ class MainWindow:
         self.backend_label.set_text(f"Backend: {self.backend.describe_backend()}")
         if self.backend.session_type == "wayland":
             self.welcome_text.set_text(
-                "Wayland mode: configure pad buttons with Edit, then run: python3 wayland_pad_daemon.py"
+                "Wayland mode: configure pad buttons with Edit, then run: wacom-wayland-pad-daemon"
             )
 
         self.refresh_devices()
@@ -817,7 +813,7 @@ class MainWindow:
                 mappings.pop(legacy_idx.get(slot_key, ""), None)
 
             save_wayland_config(cfg)
-            self.touchstrip_status.set_text("Touch strip mappings saved. Run wayland_pad_daemon.py.")
+            self.touchstrip_status.set_text("Touch strip mappings saved. Run wacom-wayland-pad-daemon.")
             return
 
         if not self.backend.use_xsetwacom:
@@ -1114,7 +1110,7 @@ class MainWindow:
                     return
                 mappings[key] = {"label": label, "command": cmd}
                 save_wayland_config(cfg)
-                self.map_status.set_text(f"Saved Wayland mapping for idx {idx}. Run wayland_pad_daemon.py.")
+                self.map_status.set_text(f"Saved Wayland mapping for idx {idx}. Run wacom-wayland-pad-daemon.")
                 self.refresh_pad_page()
                 return
 
@@ -1125,7 +1121,7 @@ class MainWindow:
                 return
             mappings[key] = {"label": keys, "command": cmd}
             save_wayland_config(cfg)
-            self.map_status.set_text(f"Saved Wayland mapping for idx {idx}. Run wayland_pad_daemon.py.")
+            self.map_status.set_text(f"Saved Wayland mapping for idx {idx}. Run wacom-wayland-pad-daemon.")
             self.refresh_pad_page()
             return
 

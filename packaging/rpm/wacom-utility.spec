@@ -1,5 +1,5 @@
 Name:           wacom-utility
-Version:        0.1.2
+Version:        0.1.3
 Release:        1%{?dist}
 Summary:        GTK4 Wacom utility with Wayland pad daemon
 
@@ -12,6 +12,7 @@ BuildArch:      noarch
 
 BuildRequires:  systemd-rpm-macros
 BuildRequires:  python3
+BuildRequires:  python3-devel
 BuildRequires:  desktop-file-utils
 
 Requires:       python3
@@ -34,51 +35,43 @@ Supports pad mapping workflow on Wayland and xsetwacom fallback on X11.
 # no build step for pure Python project
 
 %check
-python3 -m py_compile \
-    wacom_utility.py \
-    wayland_pad_daemon.py \
-    wacom_interface.py \
-    wacom_identify.py \
-    wacom_data.py \
-    wacom_xorg.py \
-    cairo_framework.py \
-    tablet_capplet.py \
-    dialogbox.py
+PYTHONPATH=src python3 -m py_compile \
+    src/wacom_utility/__init__.py \
+    src/wacom_utility/resources.py \
+    src/wacom_utility/wacom_utility.py \
+    src/wacom_utility/wayland_pad_daemon.py \
+    src/wacom_utility/wacom_interface.py \
+    src/wacom_utility/wacom_identify.py \
+    src/wacom_utility/wacom_data.py \
+    src/wacom_utility/wacom_xorg.py \
+    src/wacom_utility/cairo_framework.py \
+    src/wacom_utility/tablet_capplet.py \
+    src/wacom_utility/dialogbox.py
+cd src
+%{__python3} -c "import wacom_utility"
+cd ..
 desktop-file-validate packaging/rpm/wacom-utility.desktop
 
 %install
-install -d %{buildroot}%{_datadir}/%{name}
-
-install -m 0644 wacom_utility.py %{buildroot}%{_datadir}/%{name}/wacom_utility.py
-install -m 0644 wayland_pad_daemon.py %{buildroot}%{_datadir}/%{name}/wayland_pad_daemon.py
-install -m 0644 wacom_interface.py %{buildroot}%{_datadir}/%{name}/wacom_interface.py
-install -m 0644 wacom_identify.py %{buildroot}%{_datadir}/%{name}/wacom_identify.py
-install -m 0644 wacom_data.py %{buildroot}%{_datadir}/%{name}/wacom_data.py
-install -m 0644 wacom_xorg.py %{buildroot}%{_datadir}/%{name}/wacom_xorg.py
-install -m 0644 cairo_framework.py %{buildroot}%{_datadir}/%{name}/cairo_framework.py
-install -m 0644 tablet_capplet.py %{buildroot}%{_datadir}/%{name}/tablet_capplet.py
-install -m 0644 dialogbox.py %{buildroot}%{_datadir}/%{name}/dialogbox.py
-install -m 0644 keymap.txt %{buildroot}%{_datadir}/%{name}/keymap.txt
-install -m 0644 wacom_utility_gtk4.ui %{buildroot}%{_datadir}/%{name}/wacom_utility_gtk4.ui
-cp -a images %{buildroot}%{_datadir}/%{name}/
+install -d %{buildroot}%{python3_sitelib}/wacom_utility
+cp -a src/wacom_utility/* %{buildroot}%{python3_sitelib}/wacom_utility/
 
 install -d %{buildroot}%{_bindir}
 cat > %{buildroot}%{_bindir}/wacom-utility << 'EOF'
 #!/usr/bin/bash
-export WACOM_UTILITY_DATA_DIR=/usr/share/wacom-utility
-exec /usr/bin/python3 /usr/share/wacom-utility/wacom_utility.py "$@"
+exec %{__python3} -m wacom_utility.wacom_utility "$@"
 EOF
 chmod 0755 %{buildroot}%{_bindir}/wacom-utility
 
 cat > %{buildroot}%{_bindir}/wacom-wayland-pad-daemon << 'EOF'
 #!/usr/bin/bash
-export WACOM_UTILITY_DATA_DIR=/usr/share/wacom-utility
-exec /usr/bin/python3 /usr/share/wacom-utility/wayland_pad_daemon.py "$@"
+exec %{__python3} -m wacom_utility.wayland_pad_daemon "$@"
 EOF
 chmod 0755 %{buildroot}%{_bindir}/wacom-wayland-pad-daemon
 
-install -D -m 0644 packaging/rpm/wacom-wayland-pad-daemon.service \
-    %{buildroot}%{_userunitdir}/wacom-wayland-pad-daemon.service
+sed 's|@BINDIR@|%{_bindir}|g' packaging/rpm/wacom-wayland-pad-daemon.service \
+    > %{buildroot}%{_userunitdir}/wacom-wayland-pad-daemon.service
+chmod 0644 %{buildroot}%{_userunitdir}/wacom-wayland-pad-daemon.service
 install -D -m 0644 packaging/rpm/wacom-utility.desktop \
     %{buildroot}%{_datadir}/applications/wacom-utility.desktop
 
@@ -93,9 +86,15 @@ install -D -m 0644 packaging/rpm/wacom-utility.desktop \
 %{_bindir}/wacom-wayland-pad-daemon
 %{_userunitdir}/wacom-wayland-pad-daemon.service
 %{_datadir}/applications/wacom-utility.desktop
-%{_datadir}/%{name}
+%{python3_sitelib}/wacom_utility
 
 %changelog
+* Fri Mar 06 2026 ggveryhard <ggveryhard@users.noreply.github.com> - 0.1.3-1
+- Restructure project into a PyPI-style src package with packaged resources
+- Split user install and RPM/systemd service paths for ~/.local and /usr/bin
+- Replace source-checkout service assumptions with entry point based execution
+- Add pyproject metadata, package data, and user install documentation
+
 * Fri Mar 06 2026 ggveryhard <ggveryhard@users.noreply.github.com> - 0.1.2-1
 - Add Touch Strip apply/save flow in GTK4 UI
 - Fix Wayland PTZ-630 button index mapping mismatch

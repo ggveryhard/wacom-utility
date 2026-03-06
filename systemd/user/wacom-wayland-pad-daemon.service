@@ -5,8 +5,8 @@ PartOf=graphical-session.target
 
 [Service]
 Type=simple
-WorkingDirectory=%h/Templates/SPEC/wacom-utility
-ExecStart=/usr/bin/env python3 %h/Templates/SPEC/wacom-utility/wayland_pad_daemon.py
+Environment=PATH=%h/.local/bin:/usr/bin:/bin
+ExecStart=%h/.local/bin/wacom-wayland-pad-daemon
 Restart=on-failure
 RestartSec=1
 

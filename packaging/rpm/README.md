@@ -18,25 +18,26 @@ sudo dnf install rpm-build rpmdevtools systemd-rpm-macros
 1. Create source tarball from project root:
 
 ```bash
-VERSION=0.1.0
+VERSION=0.1.3
 NAME=wacom-utility
-cd /home/sam/Templates/SPEC
-tar --exclude-vcs -czf ${NAME}-${VERSION}.tar.gz ${NAME}
+PROJECT_ROOT=/path/to/${NAME}
+cd "$(dirname "${PROJECT_ROOT}")"
+tar --exclude-vcs -czf ${NAME}-${VERSION}.tar.gz "$(basename "${PROJECT_ROOT}")"
 ```
 
 If you use the default spec `Source0` (GitHub tags), create and push tag first:
 
 ```bash
-git tag -a v0.1.0 -m "v0.1.0"
-git push origin v0.1.0
+git tag -a v0.1.3 -m "v0.1.3"
+git push origin v0.1.3
 ```
 
 2. Prepare rpmbuild tree (local tarball flow):
 
 ```bash
 rpmdev-setuptree
-cp /home/sam/Templates/SPEC/wacom-utility/packaging/rpm/wacom-utility.spec ~/rpmbuild/SPECS/
-cp /home/sam/Templates/SPEC/${NAME}-${VERSION}.tar.gz ~/rpmbuild/SOURCES/
+cp ${PROJECT_ROOT}/packaging/rpm/wacom-utility.spec ~/rpmbuild/SPECS/
+cp "$(dirname "${PROJECT_ROOT}")"/${NAME}-${VERSION}.tar.gz ~/rpmbuild/SOURCES/
 ```
 
 3. Build:
@@ -50,10 +51,10 @@ Output RPMs:
 
 ## Notes
 
-- Runtime data is installed to `/usr/share/wacom-utility`.
+- Python package is installed to `%{python3_sitelib}/wacom_utility`.
 - Wrapper commands:
-  - `/usr/bin/wacom-utility`
-  - `/usr/bin/wacom-wayland-pad-daemon`
+  - `%{_bindir}/wacom-utility`
+  - `%{_bindir}/wacom-wayland-pad-daemon`
 - User systemd unit is installed to `%{_userunitdir}`:
   - `wacom-wayland-pad-daemon.service`
 
