@@ -790,6 +790,7 @@ class MainWindow:
             cfg = load_wayland_config()
             cfg["pad_name_contains"] = self.current_device.name
             strip_mappings = cfg.setdefault("strip_mappings", {})
+            strip_cfg = cfg.setdefault("strip_scroll", {})
             mappings = cfg.setdefault("mappings", {})
             legacy_idx = {
                 "left_up": "4",
@@ -812,8 +813,12 @@ class MainWindow:
                 strip_mappings[slot_key] = {"label": action, "command": cmd}
                 mappings.pop(legacy_idx.get(slot_key, ""), None)
 
+            strip_cfg["enabled"] = bool(strip_mappings)
             save_wayland_config(cfg)
-            self.touchstrip_status.set_text("Touch strip mappings saved. Run wacom-wayland-pad-daemon.")
+            if strip_cfg["enabled"]:
+                self.touchstrip_status.set_text("Touch strip mappings saved. Run wacom-wayland-pad-daemon.")
+            else:
+                self.touchstrip_status.set_text("Touch strip disabled.")
             return
 
         if not self.backend.use_xsetwacom:

@@ -20,7 +20,7 @@ def load_config() -> dict:
             "mappings": {},
             "strip_mappings": {},
             "strip_scroll": {
-                "enabled": True,
+                "enabled": False,
                 "threshold": 150,
                 "multiplier": 3,
                 "smoothing": 0.4,
@@ -30,9 +30,10 @@ def load_config() -> dict:
         cfg = json.loads(CONFIG_PATH.read_text(encoding="utf-8"))
         cfg.setdefault("mappings", {})
         cfg.setdefault("strip_mappings", {})
+        had_strip_scroll = "strip_scroll" in cfg
         cfg.setdefault("strip_scroll", {})
         sc = cfg["strip_scroll"]
-        sc.setdefault("enabled", True)
+        sc.setdefault("enabled", bool(cfg["strip_mappings"]) if not had_strip_scroll else True)
         sc.setdefault("threshold", 150)
         sc.setdefault("multiplier", 3)
         sc.setdefault("smoothing", 0.4)
@@ -43,7 +44,7 @@ def load_config() -> dict:
             "mappings": {},
             "strip_mappings": {},
             "strip_scroll": {
-                "enabled": True,
+                "enabled": False,
                 "threshold": 150,
                 "multiplier": 3,
                 "smoothing": 0.4,
@@ -102,6 +103,7 @@ def main() -> int:
         name_hint = cfg.get("pad_name_contains", "Wacom")
         mappings = cfg.get("mappings", {})
         strip_mappings = cfg.get("strip_mappings", {})
+        has_custom_strip_mappings = any(isinstance(v, dict) for v in strip_mappings.values())
         strip_cfg = cfg.get("strip_scroll", {})
         strip_enabled = bool(strip_cfg.get("enabled", True))
         threshold = int(strip_cfg.get("threshold", 150))
@@ -124,6 +126,7 @@ def main() -> int:
                     cfg = load_config()
                     mappings = cfg.get("mappings", mappings)
                     strip_mappings = cfg.get("strip_mappings", strip_mappings)
+                    has_custom_strip_mappings = any(isinstance(v, dict) for v in strip_mappings.values())
                     strip_cfg = cfg.get("strip_scroll", strip_cfg)
                     strip_enabled = bool(strip_cfg.get("enabled", strip_enabled))
                     threshold = int(strip_cfg.get("threshold", threshold))
@@ -188,7 +191,7 @@ def main() -> int:
                                 cmd = action.get("command", [])
                                 if isinstance(cmd, list) and cmd:
                                     run_command(cmd)
-                            else:
+                            elif not has_custom_strip_mappings:
                                 wheel_delta = int(filtered * multiplier)
                                 if wheel_delta != 0:
                                     run_command(["ydotool", "mousemove", "-w", "--", "0", str(wheel_delta)])
