@@ -108,6 +108,9 @@ For PyPI-style user installs, the repo user unit targets:
 Service file included:
 - `systemd/user/wacom-wayland-pad-daemon.service`
 
+Both the repo user unit and the RPM unit are rendered from the shared template:
+- `systemd/wacom-wayland-pad-daemon.service.in`
+
 User install flow:
 
 ```bash

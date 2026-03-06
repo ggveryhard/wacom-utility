@@ -69,8 +69,10 @@ exec %{__python3} -m wacom_utility.wayland_pad_daemon "$@"
 EOF
 chmod 0755 %{buildroot}%{_bindir}/wacom-wayland-pad-daemon
 
-sed 's|@BINDIR@|%{_bindir}|g' packaging/rpm/wacom-wayland-pad-daemon.service \
-    > %{buildroot}%{_userunitdir}/wacom-wayland-pad-daemon.service
+%{__python3} scripts/render-systemd-service.py \
+    --template systemd/wacom-wayland-pad-daemon.service.in \
+    --output %{buildroot}%{_userunitdir}/wacom-wayland-pad-daemon.service \
+    --exec-start %{_bindir}/wacom-wayland-pad-daemon
 chmod 0644 %{buildroot}%{_userunitdir}/wacom-wayland-pad-daemon.service
 install -D -m 0644 packaging/rpm/wacom-utility.desktop \
     %{buildroot}%{_datadir}/applications/wacom-utility.desktop
