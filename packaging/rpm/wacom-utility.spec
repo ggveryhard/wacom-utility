@@ -1,5 +1,5 @@
 Name:           wacom-utility
-Version:        0.1.3
+Version:        0.1.4
 Release:        1%{?dist}
 Summary:        GTK4 Wacom utility with Wayland pad daemon
 
@@ -101,6 +101,13 @@ install -D -m 0644 packaging/rpm/wacom-utility.desktop \
 %{python3_sitelib}/wacom_utility
 
 %changelog
+* Sat Mar 07 2026 ggveryhard <ggveryhard@users.noreply.github.com> - 0.1.4-1
+- Refine GTK layout to reduce unnecessary width expansion
+- Improve ExpressKeys preview scaling and hit testing
+- Simplify user-facing status messages in the GUI
+- Add ydotoold user service integration for the Wayland daemon
+- Fix touch strip fallback behavior and pressure-based scroll acceleration
+
 * Fri Mar 06 2026 ggveryhard <ggveryhard@users.noreply.github.com> - 0.1.3-1
 - Restructure project into a PyPI-style src package with packaged resources
 - Split user install and RPM/systemd service paths for ~/.local and /usr/bin

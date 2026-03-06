@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "wacom-utility"
-version = "0.1.3"
+version = "0.1.4"
 description = "GTK4 Wacom utility with Wayland pad daemon"
 readme = "README.md"
 requires-python = ">=3.10"
