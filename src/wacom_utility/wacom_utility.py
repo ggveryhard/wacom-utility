@@ -352,7 +352,7 @@ class ButtonMappingDialog(Gtk.Window):
         if self.backend.session_type == "wayland":
             idx = wayland_button_index(self.tablet_model, self.button_obj.Callsign, self.button_obj.Number)
             if idx is None:
-                self.status.set_text("Unsupported button index for Wayland mapping.")
+                self.status.set_text("Unsupported button index.")
                 return
             cfg = load_wayland_config()
             action = cfg.get("mappings", {}).get(str(idx))
@@ -401,7 +401,7 @@ class ButtonMappingDialog(Gtk.Window):
             if self.rb_ignore.get_active():
                 mappings.pop(key, None)
                 save_wayland_config(cfg)
-                self.status.set_text(f"Wayland mapping cleared for button index {btn_index}.")
+                self.status.set_text("Settings cleared.")
                 return
 
             if self.rb_mouse.get_active():
@@ -413,9 +413,7 @@ class ButtonMappingDialog(Gtk.Window):
                     return
                 mappings[key] = {"label": label, "command": cmd}
                 save_wayland_config(cfg)
-                self.status.set_text(
-                    f"Saved Wayland mapping for button index {btn_index}. Start wacom-wayland-pad-daemon."
-                )
+                self.status.set_text("Saved settings.")
                 return
 
             keys = self.key_entry.get_text().strip()
@@ -428,9 +426,7 @@ class ButtonMappingDialog(Gtk.Window):
                 return
             mappings[key] = {"label": keys, "command": cmd}
             save_wayland_config(cfg)
-            self.status.set_text(
-                f"Saved Wayland mapping for button index {btn_index}. Start wacom-wayland-pad-daemon."
-            )
+            self.status.set_text("Saved settings.")
             return
 
         if not self.device_id or not self.backend.use_xsetwacom:
@@ -501,8 +497,12 @@ class MainWindow:
         self.touchstrip_status: Gtk.Label = self.builder.get_object("touchstrip-status")
         self.mapping_preview_area: Gtk.Box = self.builder.get_object("mapping-preview-area")
         self.mapping_pad_widget = Pad()
-        self.mapping_pad_widget.set_content_width(520)
-        self.mapping_pad_widget.set_content_height(320)
+        self.mapping_pad_widget.set_content_width(300)
+        self.mapping_pad_widget.set_content_height(190)
+        self.mapping_pad_widget.set_hexpand(False)
+        self.mapping_pad_widget.set_vexpand(False)
+        self.mapping_pad_widget.set_halign(Gtk.Align.START)
+        self.mapping_pad_widget.set_valign(Gtk.Align.START)
         self.mapping_pad_widget.set_select_callback(self.on_mapping_preview_selected)
         self.mapping_preview_area.append(self.mapping_pad_widget)
 
@@ -657,7 +657,7 @@ class MainWindow:
         self.backend_label.set_text(f"Backend: {self.backend.describe_backend()}")
         if self.backend.session_type == "wayland":
             self.welcome_text.set_text(
-                "Wayland mode: configure pad buttons with Edit, then run: wacom-wayland-pad-daemon"
+                "Configure pad buttons with Edit, then start wacom daemon."
             )
 
         self.refresh_devices()
@@ -763,7 +763,7 @@ class MainWindow:
                 cmd = entry.get("command") if entry else None
                 action = self._touchstrip_command_to_action(cmd, label)
                 self._set_touchstrip_dropdown_value(dropdown, action)
-            self.touchstrip_status.set_text("Loaded touch strip actions from Wayland mapping file.")
+            self.touchstrip_status.set_text("Loaded touch strip settings.")
             return
 
         if not self.backend.use_xsetwacom:
@@ -816,7 +816,7 @@ class MainWindow:
             strip_cfg["enabled"] = bool(strip_mappings)
             save_wayland_config(cfg)
             if strip_cfg["enabled"]:
-                self.touchstrip_status.set_text("Touch strip mappings saved. Run wacom-wayland-pad-daemon.")
+                self.touchstrip_status.set_text("Saved settings.")
             else:
                 self.touchstrip_status.set_text("Touch strip disabled.")
             return
@@ -917,7 +917,7 @@ class MainWindow:
         if not editable:
             self.mapping_pad_widget.set_selected_callsign(None)
             if wayland_mode:
-                self.map_status.set_text("Wayland mapping requires ydotool backend.")
+                self.map_status.set_text("This feature requires the ydotool backend.")
             else:
                 self.map_status.set_text("Button mapping requires xsetwacom.")
             return
@@ -1102,7 +1102,7 @@ class MainWindow:
             if map_type == "ignore":
                 mappings.pop(key, None)
                 save_wayland_config(cfg)
-                self.map_status.set_text(f"Wayland mapping cleared for idx {idx}.")
+                self.map_status.set_text("Settings cleared.")
                 self.refresh_pad_page()
                 return
 
@@ -1115,7 +1115,7 @@ class MainWindow:
                     return
                 mappings[key] = {"label": label, "command": cmd}
                 save_wayland_config(cfg)
-                self.map_status.set_text(f"Saved Wayland mapping for idx {idx}. Run wacom-wayland-pad-daemon.")
+                self.map_status.set_text("Saved settings.")
                 self.refresh_pad_page()
                 return
 
@@ -1126,7 +1126,7 @@ class MainWindow:
                 return
             mappings[key] = {"label": keys, "command": cmd}
             save_wayland_config(cfg)
-            self.map_status.set_text(f"Saved Wayland mapping for idx {idx}. Run wacom-wayland-pad-daemon.")
+            self.map_status.set_text("Saved settings.")
             self.refresh_pad_page()
             return
 

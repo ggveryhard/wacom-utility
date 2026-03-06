@@ -92,6 +92,21 @@ def run_command(command: list[str]) -> None:
         pass
 
 
+def is_scroll_command(command: list[str]) -> bool:
+    return command in (
+        ["ydotool", "mousemove", "-w", "--", "0", "1"],
+        ["ydotool", "mousemove", "-w", "--", "0", "-1"],
+    )
+
+
+def command_scroll_direction(command: list[str]) -> int:
+    if command == ["ydotool", "mousemove", "-w", "--", "0", "1"]:
+        return 1
+    if command == ["ydotool", "mousemove", "-w", "--", "0", "-1"]:
+        return -1
+    return 0
+
+
 def main() -> int:
     last_left = 0
     last_right = 0
@@ -189,7 +204,12 @@ def main() -> int:
                             action = strip_mappings.get(slot) if slot else None
                             if isinstance(action, dict):
                                 cmd = action.get("command", [])
-                                if isinstance(cmd, list) and cmd:
+                                if isinstance(cmd, list) and is_scroll_command(cmd):
+                                    direction = command_scroll_direction(cmd)
+                                    wheel_delta = int(abs(filtered) * multiplier) * direction
+                                    if wheel_delta != 0:
+                                        run_command(["ydotool", "mousemove", "-w", "--", "0", str(wheel_delta)])
+                                elif isinstance(cmd, list) and cmd:
                                     run_command(cmd)
                             elif not has_custom_strip_mappings:
                                 wheel_delta = int(filtered * multiplier)

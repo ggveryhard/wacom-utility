@@ -3,7 +3,7 @@
   <requires lib="gtk" version="4.0"/>
   <object class="GtkWindow" id="window1">
     <property name="title">Wacom Utility (GTK4 Legacy Port)</property>
-    <property name="default_width">980</property>
+    <property name="default_width">860</property>
     <property name="default_height">680</property>
     <child>
       <object class="GtkBox" id="vbox1">
@@ -322,7 +322,12 @@
                             <child>
                               <object class="GtkLabel" id="touchstrip-status">
                                 <property name="xalign">0</property>
-                                <property name="hexpand">true</property>
+                                <property name="hexpand">false</property>
+                                <property name="wrap">true</property>
+                                <property name="wrap_mode">word-char</property>
+                                <property name="max_width_chars">32</property>
+                                <property name="width_chars">32</property>
+                                <property name="natural_wrap_mode">word-char</property>
                                 <property name="label">Select actions, then click Apply Touch Strip.</property>
                               </object>
                             </child>
@@ -423,11 +428,17 @@
                                                 <property name="adjustment">adj100</property>
                                               </object>
                                             </child>
-                                            <child>
-                                              <object class="GtkButton" id="apply-pressure-curve">
-                                                <property name="label">Apply Curve</property>
-                                              </object>
-                                            </child>
+                                          </object>
+                                        </child>
+                                      </object>
+                                    </child>
+                                    <child>
+                                      <object class="GtkBox" id="curve-actions">
+                                        <property name="orientation">horizontal</property>
+                                        <property name="halign">end</property>
+                                        <child>
+                                          <object class="GtkButton" id="apply-pressure-curve">
+                                            <property name="label">Apply Curve</property>
                                           </object>
                                         </child>
                                       </object>
@@ -437,56 +448,69 @@
                               </object>
                             </child>
                             <child>
-                              <object class="GtkFrame" id="pen-center-frame">
-                                <property name="label">Pen</property>
-                                <property name="width_request">200</property>
+                              <object class="GtkBox" id="pen-right-column">
+                                <property name="orientation">vertical</property>
+                                <property name="spacing">12</property>
+                                <property name="width_request">220</property>
+                                <property name="halign">start</property>
+                                <property name="valign">start</property>
                                 <child>
-                                  <object class="GtkBox" id="pen-center-box">
-                                    <property name="orientation">vertical</property>
-                                    <property name="spacing">8</property>
-                                    <property name="margin_top">10</property>
-                                    <property name="margin_bottom">10</property>
-                                    <property name="margin_start">10</property>
-                                    <property name="margin_end">10</property>
+                                  <object class="GtkFrame" id="pen-center-frame">
+                                    <property name="label">Pen</property>
                                     <child>
-                                      <object class="GtkImage" id="pen-center-image">
-                                        <property name="icon_name">input-tablet-symbolic</property>
-                                        <property name="pixel_size">96</property>
-                                      </object>
-                                    </child>
-                                    <child>
-                                      <object class="GtkLabel" id="pen-center-caption">
-                                        <property name="xalign">0.5</property>
-                                        <property name="wrap">true</property>
-                                        <property name="label">Pen body reference for side-button mapping.</property>
+                                      <object class="GtkBox" id="pen-center-box">
+                                        <property name="orientation">vertical</property>
+                                        <property name="spacing">8</property>
+                                        <property name="margin_top">10</property>
+                                        <property name="margin_bottom">10</property>
+                                        <property name="margin_start">10</property>
+                                        <property name="margin_end">10</property>
+                                        <child>
+                                          <object class="GtkImage" id="pen-center-image">
+                                            <property name="icon_name">input-tablet-symbolic</property>
+                                            <property name="pixel_size">84</property>
+                                          </object>
+                                        </child>
+                                        <child>
+                                          <object class="GtkLabel" id="pen-center-caption">
+                                            <property name="xalign">0.5</property>
+                                            <property name="wrap">true</property>
+                                            <property name="max_width_chars">18</property>
+                                            <property name="width_chars">18</property>
+                                            <property name="natural_wrap_mode">word-char</property>
+                                            <property name="label">Pen body reference for side-button mapping.</property>
+                                          </object>
+                                        </child>
                                       </object>
                                     </child>
                                   </object>
                                 </child>
-                              </object>
-                            </child>
-                            <child>
-                              <object class="GtkFrame" id="pen-right-frame">
-                                <property name="label">Side Buttons</property>
-                                <property name="width_request">260</property>
                                 <child>
-                                  <object class="GtkBox" id="pen-right-box">
-                                    <property name="orientation">vertical</property>
-                                    <property name="spacing">10</property>
-                                    <property name="margin_top">10</property>
-                                    <property name="margin_bottom">10</property>
-                                    <property name="margin_start">10</property>
-                                    <property name="margin_end">10</property>
+                                  <object class="GtkFrame" id="pen-right-frame">
+                                    <property name="label">Side Buttons</property>
                                     <child>
-                                      <object class="GtkLabel" id="pen-right-note">
-                                        <property name="xalign">0</property>
-                                        <property name="wrap">true</property>
-                                        <property name="label">This section will host pen side-button actions in the next phase.</property>
-                                      </object>
-                                    </child>
-                                    <child>
-                                      <object class="GtkButton" id="pen-defaults-btn">
-                                        <property name="label">Defaults</property>
+                                      <object class="GtkBox" id="pen-right-box">
+                                        <property name="orientation">vertical</property>
+                                        <property name="spacing">10</property>
+                                        <property name="margin_top">10</property>
+                                        <property name="margin_bottom">10</property>
+                                        <property name="margin_start">10</property>
+                                        <property name="margin_end">10</property>
+                                        <child>
+                                          <object class="GtkLabel" id="pen-right-note">
+                                            <property name="xalign">0</property>
+                                            <property name="wrap">true</property>
+                                            <property name="max_width_chars">20</property>
+                                            <property name="width_chars">20</property>
+                                            <property name="natural_wrap_mode">word-char</property>
+                                            <property name="label">This section will host pen side-button actions in the next phase.</property>
+                                          </object>
+                                        </child>
+                                        <child>
+                                          <object class="GtkButton" id="pen-defaults-btn">
+                                            <property name="label">Defaults</property>
+                                          </object>
+                                        </child>
                                       </object>
                                     </child>
                                   </object>
@@ -522,12 +546,15 @@
                               <object class="GtkBox" id="mapping-bottom-row">
                                 <property name="orientation">horizontal</property>
                                 <property name="spacing">8</property>
-                                <property name="hexpand">true</property>
+                                <property name="hexpand">false</property>
                                 <property name="vexpand">true</property>
+                                <property name="halign">start</property>
                                 <child>
                               <object class="GtkFrame" id="mapping-controls-frame">
                                 <property name="label">ExpressKeys Controls</property>
                                 <property name="width_request">320</property>
+                                <property name="hexpand">false</property>
+                                <property name="halign">start</property>
                                 <child>
                                   <object class="GtkBox" id="mapping-controls-box">
                                     <property name="orientation">vertical</property>
@@ -583,6 +610,10 @@
                                       <object class="GtkLabel" id="map-status">
                                         <property name="xalign">0</property>
                                         <property name="wrap">true</property>
+                                        <property name="wrap_mode">word-char</property>
+                                        <property name="max_width_chars">32</property>
+                                        <property name="width_chars">32</property>
+                                        <property name="natural_wrap_mode">word-char</property>
                                         <property name="label">Select a button and action.</property>
                                       </object>
                                     </child>
@@ -593,8 +624,10 @@
                             <child>
                               <object class="GtkFrame" id="mapping-preview-frame">
                                 <property name="label">ExpressKeys Preview</property>
-                                <property name="hexpand">true</property>
+                                <property name="hexpand">false</property>
                                 <property name="vexpand">true</property>
+                                <property name="width_request">420</property>
+                                <property name="halign">start</property>
                                 <child>
                                   <object class="GtkBox" id="mapping-preview-box">
                                     <property name="orientation">vertical</property>
@@ -614,6 +647,10 @@
                                       <object class="GtkLabel" id="mapping-preview-text">
                                         <property name="xalign">0</property>
                                         <property name="wrap">true</property>
+                                        <property name="wrap_mode">word-char</property>
+                                        <property name="max_width_chars">36</property>
+                                        <property name="width_chars">36</property>
+                                        <property name="natural_wrap_mode">word-char</property>
                                         <property name="label">Click a key area to jump to its setting. This follows the official left/right ExpressKeys concept.</property>
                                       </object>
                                     </child>
@@ -624,7 +661,8 @@
                                       <object class="GtkBox" id="mapping-preview-area">
                                         <property name="orientation">vertical</property>
                                         <property name="vexpand">true</property>
-                                        <property name="hexpand">true</property>
+                                        <property name="hexpand">false</property>
+                                        <property name="halign">start</property>
                                       </object>
                                     </child>
                                   </object>

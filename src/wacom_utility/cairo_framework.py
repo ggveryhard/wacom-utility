@@ -30,8 +30,12 @@ class Pad(DrawingArea):
         self.tablet = None
         self.button_map = []
         self.image = ""
+        self.image_surface = None
         self.selected_callsign = None
         self._select_callback = None
+        self._render_scale = 1.0
+        self._render_offset_x = 0.0
+        self._render_offset_y = 0.0
 
         click = Gtk.GestureClick.new()
         click.connect("pressed", self.on_click_pressed)
@@ -52,20 +56,25 @@ class Pad(DrawingArea):
             self.image = str(data_path("images", "pad", f"{self.tablet.Model}.png"))
             try:
                 os.stat(self.image)
+                self.image_surface = cairo.ImageSurface.create_from_png(self.image)
             except:
                 print("No image for %s pad" % self.tablet.Model)
                 self.image = ""
+                self.image_surface = None
 
         else:
             self.button_map = []
             self.image = ""
+            self.image_surface = None
         self.queue_draw()
 
     def on_click_pressed(self, _gesture, _n_press, x, y):
         if not self.button_map:
             return
+        logical_x = (x - self._render_offset_x) / self._render_scale
+        logical_y = (y - self._render_offset_y) / self._render_scale
         for button in self.button_map:
-            if button.X1 <= x <= button.X2 and button.Y1 <= y <= button.Y2:
+            if button.X1 <= logical_x <= button.X2 and button.Y1 <= logical_y <= button.Y2:
                 self.selected_callsign = button.Callsign
                 self.queue_draw()
                 if self._select_callback:
@@ -77,14 +86,31 @@ class Pad(DrawingArea):
         cr.rectangle(0, 0, width, height)
         cr.fill()
 
-        if self.image:
-            # Draw background image
-            cr.set_source_surface(
-                cairo.ImageSurface.create_from_png(self.image))
-            cr.paint()
+        self._render_scale = 1.0
+        self._render_offset_x = 0.0
+        self._render_offset_y = 0.0
+
+        if self.image_surface:
+            img_w = self.image_surface.get_width()
+            img_h = self.image_surface.get_height()
+            if img_w > 0 and img_h > 0:
+                self._render_scale = min(width / img_w, height / img_h)
+                self._render_offset_x = (width - img_w * self._render_scale) / 2.0
+                self._render_offset_y = (height - img_h * self._render_scale) / 2.0
+
+                cr.save()
+                cr.translate(self._render_offset_x, self._render_offset_y)
+                cr.scale(self._render_scale, self._render_scale)
+                cr.set_source_surface(self.image_surface, 0, 0)
+                cr.paint()
+                cr.restore()
 
         if self.button_map:
-            # Paint on buttons
+            cr.save()
+            cr.translate(self._render_offset_x, self._render_offset_y)
+            cr.scale(self._render_scale, self._render_scale)
+
+            # Paint on buttons in logical image coordinates.
             cr.select_font_face(
                 "Sans", cairo.FONT_SLANT_NORMAL, cairo.FONT_WEIGHT_BOLD)
             cr.set_font_size(18)
@@ -101,10 +127,12 @@ class Pad(DrawingArea):
                 cr.stroke()
                 if self.selected_callsign == button.Callsign:
                     cr.set_source_rgba(1.0, 0.3, 0.2, 0.95)
-                    cr.set_line_width(3.0)
+                    cr.set_line_width(max(1.0, 3.0 / self._render_scale))
                     cr.rectangle(button.X1, button.Y1, button.X2 - button.X1, button.Y2 - button.Y1)
                     cr.stroke()
                     cr.set_line_width(1.0)
+
+            cr.restore()
         else:
             cr.select_font_face(
                 "Sans", cairo.FONT_SLANT_NORMAL, cairo.FONT_WEIGHT_BOLD)

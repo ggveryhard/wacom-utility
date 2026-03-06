@@ -100,6 +100,13 @@ PYTHONPATH=src python3 -m wacom_utility.wayland_pad_daemon
 }
 ```
 
+Future enhancement note:
+- The current Wayland touch strip behavior applies pressure-based acceleration by
+  default for scroll actions.
+- If finer control is needed later, add dedicated left/right touch strip tuning
+  controls in the GUI for pressure threshold and multiplier instead of relying
+  only on the shared `strip_scroll` defaults.
+
 ## systemd --user (Auto-start daemon)
 
 For PyPI-style user installs, the repo user unit targets:
