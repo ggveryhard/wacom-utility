@@ -1,0 +1,14 @@
+[Unit]
+Description=Wacom Wayland Pad Daemon (evdev + ydotool)
+After=graphical-session.target
+PartOf=graphical-session.target
+
+[Service]
+Type=simple
+WorkingDirectory=%h/Templates/SPEC/wacom-utility
+ExecStart=/usr/bin/env python3 %h/Templates/SPEC/wacom-utility/wayland_pad_daemon.py
+Restart=on-failure
+RestartSec=1
+
+[Install]
+WantedBy=default.target

@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Version=1.0
+Name=Wacom Utility
+Comment=Configure Wacom tablet mappings (GTK4/Wayland/X11)
+Exec=wacom-utility
+Terminal=false
+Categories=Settings;Utility;
+StartupNotify=true
