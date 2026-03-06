@@ -1,6 +1,7 @@
 """Wacom backend helpers for X11 and Wayland sessions."""
 
 import json
+import os
 import shutil
 import subprocess
 from dataclasses import dataclass
