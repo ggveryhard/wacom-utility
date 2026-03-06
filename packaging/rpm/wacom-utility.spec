@@ -1,5 +1,5 @@
 Name:           wacom-utility
-Version:        0.1.0
+Version:        0.1.2
 Release:        1%{?dist}
 Summary:        GTK4 Wacom utility with Wayland pad daemon
 
@@ -96,6 +96,13 @@ install -D -m 0644 packaging/rpm/wacom-utility.desktop \
 %{_datadir}/%{name}
 
 %changelog
+* Fri Mar 06 2026 ggveryhard <ggveryhard@users.noreply.github.com> - 0.1.2-1
+- Add Touch Strip apply/save flow in GTK4 UI
+- Fix Wayland PTZ-630 button index mapping mismatch
+- Separate strip_mappings from button mappings to avoid conflicts
+- Remove non-functional ExpressKeys Layout block
+- Simplify mapping dropdown labels to show only GUI button names
+
 * Fri Mar 06 2026 ggveryhard <ggveryhard@users.noreply.github.com> - 0.1.0-1
 - COPR-ready initial packaging
 - Add runtime dependency details for GTK4/Wayland/X11 fallback
