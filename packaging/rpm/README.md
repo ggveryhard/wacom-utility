@@ -24,7 +24,14 @@ cd /home/sam/Templates/SPEC
 tar --exclude-vcs -czf ${NAME}-${VERSION}.tar.gz ${NAME}
 ```
 
-2. Prepare rpmbuild tree:
+If you use the default spec `Source0` (GitHub tags), create and push tag first:
+
+```bash
+git tag -a v0.1.0 -m "v0.1.0"
+git push origin v0.1.0
+```
+
+2. Prepare rpmbuild tree (local tarball flow):
 
 ```bash
 rpmdev-setuptree

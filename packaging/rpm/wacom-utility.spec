@@ -4,18 +4,24 @@ Release:        1%{?dist}
 Summary:        GTK4 Wacom utility with Wayland pad daemon
 
 License:        GPL-2.0-only
-URL:            https://example.invalid/wacom-utility
-Source0:        %{name}-%{version}.tar.gz
+URL:            https://github.com/ggveryhard/wacom-utility
+# Source tarball from GitHub version tag.
+Source0:        %{url}/archive/refs/tags/v%{version}.tar.gz#/%{name}-%{version}.tar.gz
 
 BuildArch:      noarch
 
 BuildRequires:  systemd-rpm-macros
+BuildRequires:  python3
+BuildRequires:  desktop-file-utils
 
 Requires:       python3
 Requires:       python3-gobject
 Requires:       python3-cairo
 Requires:       python3-evdev
+Requires:       gtk4
 Requires:       ydotool
+Recommends:     sway
+Recommends:     xorg-x11-drv-wacom
 
 %description
 Wacom utility with GTK4 GUI and a Wayland daemon (evdev + ydotool).
@@ -26,6 +32,19 @@ Supports pad mapping workflow on Wayland and xsetwacom fallback on X11.
 
 %build
 # no build step for pure Python project
+
+%check
+python3 -m py_compile \
+    wacom_utility.py \
+    wayland_pad_daemon.py \
+    wacom_interface.py \
+    wacom_identify.py \
+    wacom_data.py \
+    wacom_xorg.py \
+    cairo_framework.py \
+    tablet_capplet.py \
+    dialogbox.py
+desktop-file-validate packaging/rpm/wacom-utility.desktop
 
 %install
 install -d %{buildroot}%{_datadir}/%{name}
@@ -60,15 +79,26 @@ chmod 0755 %{buildroot}%{_bindir}/wacom-wayland-pad-daemon
 
 install -D -m 0644 packaging/rpm/wacom-wayland-pad-daemon.service \
     %{buildroot}%{_userunitdir}/wacom-wayland-pad-daemon.service
+install -D -m 0644 packaging/rpm/wacom-utility.desktop \
+    %{buildroot}%{_datadir}/applications/wacom-utility.desktop
 
 %files
 %license LICENSE
 %doc README.md
+%doc README_UPGRADE.md
+%doc PYTHON3_MIGRATION.md
+%doc UPGRADE_CHECKLIST.md
+%doc UPGRADE_REPORT.md
 %{_bindir}/wacom-utility
 %{_bindir}/wacom-wayland-pad-daemon
 %{_userunitdir}/wacom-wayland-pad-daemon.service
+%{_datadir}/applications/wacom-utility.desktop
 %{_datadir}/%{name}
 
 %changelog
-* Thu Mar 06 2026 Maintainer <maintainer@example.invalid> - 0.1.0-1
-- Initial RPM packaging skeleton for GTK4 + Wayland daemon workflow
+* Fri Mar 06 2026 ggveryhard <ggveryhard@users.noreply.github.com> - 0.1.0-1
+- COPR-ready initial packaging
+- Add runtime dependency details for GTK4/Wayland/X11 fallback
+- Add %%check py_compile stage to reduce first-build failure risk
+- Include migration/upgrade docs in package
+- Add desktop entry for app launcher integration
