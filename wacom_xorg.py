@@ -1,8 +1,9 @@
 # Xorg Modification utility
-# Tested on Ubuntu Jaunty x86_64
+# Tested on Ubuntu with Python 3
 
 from copy import copy
 import os
+import subprocess
 
 
 def SetXorgConfig(value):
@@ -84,11 +85,18 @@ def CheckXorgConfig():
     # Does not check validity of configuration
     State = 0  # 0=Unconfigured 1=Configured 2=Broken
     Devices = []
-    CheckXorgConf()
-    f1 = open("/etc/X11/xorg.conf", 'r')
-    data = f1.readlines()
-    f1.close()
-    for i in range(0,len(data)):
+    try:
+        CheckXorgConf()
+        f1 = open("/etc/X11/xorg.conf", 'r')
+        data = f1.readlines()
+        f1.close()
+    except FileNotFoundError:
+        return (0, [])  # No xorg.conf file
+    except Exception as e:
+        print(f"Warning: Could not check xorg.conf: {e}")
+        return (0, [])
+
+    for i in range(0, len(data)):
         line = data[i]
         line = line.split("#")[0]  # Remove commenting
         if StdParse(line).count("section\"inputdevice\""):
@@ -117,7 +125,7 @@ def CheckXorgConfig():
 
 
 def StdParse(line):  # Format with no spaces, tabs, and double quotes only
-    return line.replace(" ","").replace("\t","").replace("\'","\"").replace("\n","").lower()
+    return line.replace(" ", "").replace("\t", "").replace("\'", "\"").replace("\n", "").lower()
 
 
 def CheckXorgConf():
@@ -135,10 +143,11 @@ def CheckXorgConf():
 
 
 def GetSLData():
-    return ["\tInputDevice   \"stylus\"  \"SendCoreEvents\"",\
-        "\tInputDevice   \"eraser\"  \"SendCoreEvents\"",\
-        "\tInputDevice   \"cursor\"  \"SendCoreEvents\"\t# For non-LCD tablets only",\
-        "\tInputDevice   \"pad\"  \"SendCoreEvents\"\t# For Intuos3/CintiqV5/Graphire4/Bamboo tablets"]
+    return ["\tInputDevice   \"stylus\"  \"SendCoreEvents\"",
+            "\tInputDevice   \"eraser\"  \"SendCoreEvents\"",
+            "\tInputDevice   \"cursor\"  \"SendCoreEvents\"\t# For non-LCD tablets only",
+            "\tInputDevice   \"pad\"  \"SendCoreEvents\"\t# For Intuos3/CintiqV5/Graphire4/Bamboo tablets"]
+
 
 def GetIDData():
     data = """Section "InputDevice"

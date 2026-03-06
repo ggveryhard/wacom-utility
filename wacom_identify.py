@@ -1,6 +1,7 @@
 # Identifies wacom tablet model
 from wacom_data import TabletIdentities
 import os
+import subprocess
 
 
 class TabletIdClass:
@@ -13,7 +14,8 @@ class TabletIdClass:
             self.data = ["iProduct " + cloak]
         else:
             # self.Data = os.popen("lsusb -v | grep 'iProduct'").readlines()
-            self.data = os.popen("lsusb").readlines()
+            result = subprocess.run(["lsusb"], capture_output=True, text=True)
+            self.data = result.stdout.splitlines()
 
         for item in self.data:
             if item.count("iProduct"):  # Identify by model name

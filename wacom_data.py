@@ -1,5 +1,11 @@
 # Loads settings on various models of tablets
 import xml.dom.minidom
+import os
+from pathlib import Path
+
+
+def data_dir() -> Path:
+    return Path(os.environ.get("WACOM_UTILITY_DATA_DIR", Path(__file__).resolve().parent))
 
 
 class TabletIdentities:
@@ -87,7 +93,8 @@ class Tablet:
 
         try:
             # Attempt to load button map
-            XML = xml.dom.minidom.parse("images/pad/"+self.Model+".xml")
+            xml_path = data_dir() / "images" / "pad" / f"{self.Model}.xml"
+            XML = xml.dom.minidom.parse(str(xml_path))
         except:
             return
 
@@ -106,7 +113,7 @@ class Tablet:
                 Y2 = item.getElementsByTagName("y2")[0].childNodes[0].data
                 self.Buttons.append(Button(XName, XNumber, XCallsign, int(X1), int(Y1), int(X2), int(Y2)))
         except:
-            print("Error loading " + "images/pad/" + self.Model + ".xml")
+            print("Error loading " + str(data_dir() / "images" / "pad" / f"{self.Model}.xml"))
 
 
 class Button:

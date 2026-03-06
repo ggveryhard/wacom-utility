@@ -1,0 +1,382 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <requires lib="gtk" version="4.0" />
+  <object class="GtkWindow" id="window1">
+    <property name="title">Wacom Utility (GTK4 Legacy Port)</property>
+    <property name="default_width">980</property>
+    <property name="default_height">680</property>
+    <child>
+      <object class="GtkBox" id="vbox1">
+        <property name="orientation">vertical</property>
+        <property name="spacing">8</property>
+        <property name="margin_top">12</property>
+        <property name="margin_bottom">12</property>
+        <property name="margin_start">12</property>
+        <property name="margin_end">12</property>
+        <child>
+          <object class="GtkBox" id="mainbox">
+            <property name="orientation">horizontal</property>
+            <property name="spacing">12</property>
+            <child>
+              <object class="GtkBox" id="leftpanel">
+                <property name="orientation">vertical</property>
+                <property name="spacing">8</property>
+                <property name="width_request">300</property>
+                <child>
+                  <object class="GtkImage" id="tablet-icon" />
+                </child>
+                <child>
+                  <object class="GtkLabel" id="tablet-label">
+                    <property name="xalign">0</property>
+                    <property name="label">Tablet</property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkLabel" id="backend-label">
+                    <property name="xalign">0</property>
+                    <property name="wrap">true</property>
+                    <property name="label">Backend</property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkScrolledWindow" id="dev-scroll">
+                    <property name="vexpand">true</property>
+                    <child>
+                      <object class="GtkListBox" id="input-list">
+                        <property name="selection_mode">single</property>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkButton" id="refresh-devices">
+                    <property name="label">Refresh Devices</property>
+                  </object>
+                </child>
+              </object>
+            </child>
+            <child>
+              <object class="GtkBox" id="right-col">
+                <property name="orientation">vertical</property>
+                <property name="spacing">8</property>
+                <property name="hexpand">true</property>
+                <property name="vexpand">true</property>
+                <child>
+                  <object class="GtkStackSwitcher" id="stack-switcher">
+                    <property name="halign">start</property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkStack" id="right-stack">
+                    <property name="vexpand">true</property>
+                    <property name="hexpand">true</property>
+                    <property name="transition_type">slide-left-right</property>
+                    <child>
+                      <object class="GtkBox" id="WelcomeScreen">
+                        <property name="orientation">vertical</property>
+                        <property name="spacing">8</property>
+                        <property name="margin_top">8</property>
+                        <property name="margin_bottom">8</property>
+                        <property name="margin_start">8</property>
+                        <property name="margin_end">8</property>
+                        <child>
+                          <object class="GtkLabel" id="welcome-title">
+                            <property name="xalign">0</property>
+                            <property name="use_markup">true</property>
+                            <property name="label">&lt;b&gt;Welcome&lt;/b&gt;</property>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="GtkLabel" id="session-label">
+                            <property name="xalign">0</property>
+                            <property name="wrap">true</property>
+                            <property name="label">Session info</property>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="GtkLabel" id="welcome-text">
+                            <property name="xalign">0</property>
+                            <property name="wrap">true</property>
+                            <property name="label">Select a device from the left list.</property>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="GtkSeparator" id="sep1" />
+                        </child>
+                        <child>
+                          <object class="GtkLabel" id="wl-title">
+                            <property name="xalign">0</property>
+                            <property name="use_markup">true</property>
+                            <property name="label">&lt;b&gt;Wayland Output Mapping&lt;/b&gt;</property>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="GtkEntry" id="output-entry">
+                            <property name="placeholder_text">Output name (example: HDMI-A-1)</property>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="GtkBox" id="map-button-row">
+                            <property name="orientation">horizontal</property>
+                            <property name="spacing">8</property>
+                            <child>
+                              <object class="GtkButton" id="map-output-btn">
+                                <property name="label">Map To Output</property>
+                              </object>
+                            </child>
+                            <child>
+                              <object class="GtkButton" id="map-all-btn">
+                                <property name="label">Map To All Outputs</property>
+                              </object>
+                            </child>
+                          </object>
+                        </child>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkBox" id="PadContainer">
+                        <property name="orientation">vertical</property>
+                        <property name="spacing">8</property>
+                        <property name="margin_top">8</property>
+                        <property name="margin_bottom">8</property>
+                        <property name="margin_start">8</property>
+                        <property name="margin_end">8</property>
+                        <child>
+                          <object class="GtkLabel" id="pad-title">
+                            <property name="xalign">0</property>
+                            <property name="use_markup">true</property>
+                            <property name="label">&lt;b&gt;Pad Buttons&lt;/b&gt;</property>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="GtkBox" id="padbox">
+                            <property name="orientation">horizontal</property>
+                            <property name="spacing">8</property>
+                            <property name="hexpand">true</property>
+                            <property name="vexpand">true</property>
+                            <child>
+                              <object class="GtkFrame" id="pad-preview-frame">
+                                <property name="label">Pad Preview</property>
+                                <property name="hexpand">true</property>
+                                <property name="vexpand">true</property>
+                                <child>
+                                  <object class="GtkBox" id="pad-preview-box">
+                                    <property name="orientation">vertical</property>
+                                    <property name="margin_top">6</property>
+                                    <property name="margin_bottom">6</property>
+                                    <property name="margin_start">6</property>
+                                    <property name="margin_end">6</property>
+                                  </object>
+                                </child>
+                              </object>
+                            </child>
+                            <child>
+                              <object class="GtkFrame" id="pad-list-frame">
+                                <property name="label">Button Actions</property>
+                                <property name="width_request">350</property>
+                                <child>
+                                  <object class="GtkScrolledWindow" id="scrolledwindow1">
+                                    <property name="vexpand">true</property>
+                                    <child>
+                                      <object class="GtkListBox" id="padbuttonlist">
+                                        <property name="selection_mode">none</property>
+                                      </object>
+                                    </child>
+                                  </object>
+                                </child>
+                              </object>
+                            </child>
+                          </object>
+                        </child>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkBox" id="PressureContainer">
+                        <property name="orientation">vertical</property>
+                        <property name="spacing">10</property>
+                        <property name="margin_top">8</property>
+                        <property name="margin_bottom">8</property>
+                        <property name="margin_start">8</property>
+                        <property name="margin_end">8</property>
+                        <child>
+                          <object class="GtkLabel" id="pressure-title">
+                            <property name="xalign">0</property>
+                            <property name="use_markup">true</property>
+                            <property name="label">&lt;b&gt;Pressure&lt;/b&gt;</property>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="GtkLabel" id="pressure-support">
+                            <property name="xalign">0</property>
+                            <property name="wrap">true</property>
+                            <property name="label">Pressure controls require xsetwacom.</property>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="GtkFrame" id="mode-frame">
+                            <property name="label">Mode</property>
+                            <child>
+                              <object class="GtkDropDown" id="devicemodecombo" />
+                            </child>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="GtkFrame" id="force-frame">
+                            <property name="label">Click Force (Threshold)</property>
+                            <child>
+                              <object class="GtkScale" id="clickforce-scale">
+                                <property name="orientation">horizontal</property>
+                                <property name="digits">1</property>
+                                <property name="draw_value">true</property>
+                                <property name="hexpand">true</property>
+                              </object>
+                            </child>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="GtkFrame" id="curve-frame">
+                            <property name="label">Pressure Curve (x1 y1 x2 y2)</property>
+                            <child>
+                              <object class="GtkBox" id="curve-grid">
+                                <property name="orientation">horizontal</property>
+                                <property name="spacing">8</property>
+                                <property name="margin_top">8</property>
+                                <property name="margin_bottom">8</property>
+                                <property name="margin_start">8</property>
+                                <property name="margin_end">8</property>
+                                <child>
+                                  <object class="GtkSpinButton" id="cp1x">
+                                    <property name="adjustment">adj100</property>
+                                  </object>
+                                </child>
+                                <child>
+                                  <object class="GtkSpinButton" id="cp1y">
+                                    <property name="adjustment">adj100</property>
+                                  </object>
+                                </child>
+                                <child>
+                                  <object class="GtkSpinButton" id="cp2x">
+                                    <property name="adjustment">adj100</property>
+                                  </object>
+                                </child>
+                                <child>
+                                  <object class="GtkSpinButton" id="cp2y">
+                                    <property name="adjustment">adj100</property>
+                                  </object>
+                                </child>
+                                <child>
+                                  <object class="GtkButton" id="apply-pressure-curve">
+                                    <property name="label">Apply Curve</property>
+                                  </object>
+                                </child>
+                              </object>
+                            </child>
+                          </object>
+                        </child>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkBox" id="MappingContainer">
+                        <property name="orientation">vertical</property>
+                        <property name="spacing">10</property>
+                        <property name="margin_top">8</property>
+                        <property name="margin_bottom">8</property>
+                        <property name="margin_start">8</property>
+                        <property name="margin_end">8</property>
+                        <child>
+                          <object class="GtkLabel" id="mapping-title">
+                            <property name="xalign">0</property>
+                            <property name="use_markup">true</property>
+                            <property name="label">&lt;b&gt;Button Mapping&lt;/b&gt;</property>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="GtkDropDown" id="map-button-combo" />
+                        </child>
+                        <child>
+                          <object class="GtkDropDown" id="map-type-combo" />
+                        </child>
+                        <child>
+                          <object class="GtkDropDown" id="mouse-action-combo" />
+                        </child>
+                        <child>
+                          <object class="GtkEntry" id="key-action-entry">
+                            <property name="placeholder_text">Key sequence (example: CTRL Z)</property>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="GtkButton" id="apply-map-btn">
+                            <property name="label">Apply Button Action</property>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="GtkLabel" id="map-status">
+                            <property name="xalign">0</property>
+                            <property name="wrap">true</property>
+                            <property name="label">Select a button and action.</property>
+                          </object>
+                        </child>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkBox" id="OptionsContainer">
+                        <property name="orientation">vertical</property>
+                        <property name="spacing">10</property>
+                        <property name="margin_top">8</property>
+                        <property name="margin_bottom">8</property>
+                        <property name="margin_start">8</property>
+                        <property name="margin_end">8</property>
+                        <child>
+                          <object class="GtkLabel" id="opt-title">
+                            <property name="xalign">0</property>
+                            <property name="use_markup">true</property>
+                            <property name="label">&lt;b&gt;Options&lt;/b&gt;</property>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="GtkCheckButton" id="applyonstartup">
+                            <property name="label">Apply settings on startup</property>
+                            <property name="active">true</property>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="GtkCheckButton" id="save-commands">
+                            <property name="label">Save mapping command to ~/.wacom_utility</property>
+                            <property name="active">true</property>
+                          </object>
+                        </child>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="GtkBox" id="hbox1">
+            <property name="orientation">horizontal</property>
+            <property name="halign">end</property>
+            <property name="spacing">8</property>
+            <child>
+              <object class="GtkButton" id="button-help">
+                <property name="label">Help</property>
+              </object>
+            </child>
+            <child>
+              <object class="GtkButton" id="button-close">
+                <property name="label">Close</property>
+              </object>
+            </child>
+          </object>
+        </child>
+      </object>
+    </child>
+  </object>
+  <object class="GtkAdjustment" id="adj100">
+    <property name="lower">0</property>
+    <property name="upper">100</property>
+    <property name="step_increment">1</property>
+    <property name="page_increment">5</property>
+  </object>
+</interface>
